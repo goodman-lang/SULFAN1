@@ -1,0 +1,157 @@
+<!-- saved from url=(0014)about:internet -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab-Kits Technologies Ltd</title>
+  <link rel="icon" type="image/jpg" href="Images/favicon.jpg">
+  <style>
+    .container {
+      width: 680px;
+      height: 270px;
+      background-color: #0a2270;
+      border: 3px solid #ffffff;
+      margin: 6px auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    #countdown {
+      font-size: 70px;
+      font-weight: none;
+      color: #ffffff;
+	  font-family: Baskervill Old Face;
+      animation: countdown-animation 1s infinite;
+    }
+    
+    @keyframes countdown-animation {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+    
+    #result-screen {
+      font-size: 19px;
+      font-weight: bold;
+      color: white;
+      width: 95px;
+      height: 18px;
+      border: 3px solid white;
+      padding: 10px;
+      margin-bottom: -98px;
+    }
+    
+    .start-button {
+      background-color: #4CAF50;
+      color: #fff;
+      border: 2px solid #000;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 15px;
+	  margin-left: 600px;
+	  position: relative;
+	  bottom: -180px
+    }
+    
+    .clear-button {
+      background-color: #f44336;
+      color: #fff;
+      border: 2px solid #000;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 15px;
+	  margin-right: 610px;
+	  position: relative;
+	  bottom: -140px
+    }
+  </style>
+</head>
+<body style="background-color: black;">
+  <button style="color: red;" id="connect-button" class="connection-button">Connect</button>
+  <button class="connection-button">
+    <span style="background-color: green;" style="border-radius: 0px;" id="connection-status">Connect to XRF-PT-SYD-17040</span>
+  </button>
+  <div id="content" style="display:none;">
+    <div class="container">
+      <pre style="font-family: Courier New, serif; color: #ffffff;">                                                       M= Measuring
+	                                               T= Time
+	                                               MT= 60*3</pre>
+      <div id="countdown">60</div>
+      <pre style="font-family: Courier New, serif; color: #ffffff;">Sulfur Content (wt%)</pre>
+      <div id="result-screen">   </div>
+      <div class="button-container">
+        <button class="start-button" id="start-button">Measure</button>
+        <button class="clear-button" onclick="clearResult()">Clear</button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    const connectButton = document.getElementById('connect-button');
+    const connectionStatus = document.getElementById('connection-status');
+    const content = document.getElementById('content');
+    const countdownElement = document.getElementById('countdown');
+    const resultScreen = document.getElementById('result-screen');
+    const startButton = document.getElementById('start-button');
+
+    let countdown = 60;
+    let cycle = 0;
+    let countdownInterval;
+
+    connectButton.addEventListener('click', connectHandler);
+    startButton.addEventListener('click', initCountdown);
+
+    function connectHandler() {
+      connectionStatus.innerText = 'Connecting...';
+      setTimeout(() => {
+        connectionStatus.innerText = 'Connected';
+        content.style.display = 'block';
+      }, 5000);
+    }
+
+    function initCountdown() {
+      cycle = 0;
+      countdown = 60;
+      countdownElement.innerHTML = countdown;
+      countdownInterval = setInterval(updateCountdown, 1000);
+    }
+
+    function updateCountdown() {
+      countdown--;
+      countdownElement.innerHTML = countdown;
+      if (countdown < 0) {
+        cycle++;
+        countdown = 60;
+        countdownElement.innerHTML = countdown;
+        if (cycle >= 3) {
+          clearInterval(countdownInterval);
+          resultScreen.innerHTML = `=  ${generateRandomResult()}`;
+        }
+      }
+    }
+
+    function generateRandomResult() {
+      return (Math.random() * (0.0070 - 0.0067) + 0.0075).toFixed(4);
+    }
+
+    function clearResult() {
+      resultScreen.innerHTML = " ";
+      countdown = 60;
+      cycle = 0;
+      countdownElement.innerHTML = countdown;
+    }
+  </script>
+</body>
+</html>
